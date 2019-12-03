@@ -11,7 +11,6 @@ const statAsync = util.promisify(fs.stat);
 server.on('request', async (req, res) => {
   const pathname = url.parse(req.url).pathname.slice(1);
   const filepath = path.join(__dirname, 'files', pathname);
-  console.log('---filepath ', filepath);
 
   switch (req.method) {
     case 'GET':
