@@ -1,7 +1,9 @@
 const url = require('url');
 const http = require('http');
 const path = require('path');
-const receiveFile = require('./recieveFile');
+
+const receiveFile = require('./receiveFile');
+
 const server = new http.Server();
 
 server.on('request', (req, res) => {
@@ -24,6 +26,7 @@ server.on('request', (req, res) => {
       }
 
       receiveFile(filepath, req, res);
+
       break;
 
     default:
