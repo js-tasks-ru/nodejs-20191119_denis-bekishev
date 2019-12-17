@@ -32,9 +32,40 @@ app.use((ctx, next) => {
   ctx.login = async function(user) {
     const token = uuid();
 
+    const session = new Session({
+      token,
+      lastVisit: Date.now(),
+      user: user.id,
+    });
+
+    await session.save();
+
     return token;
   };
 
+  return next();
+});
+
+app.use(async (ctx, next) => {
+  if (!~ctx.url.indexOf('/api')) return next();
+  const {header} = ctx.request;
+  let token;
+  if (header && header.authorization) {
+    const parts = header.authorization.split(' ');
+    if (parts.length === 2) {
+      token = parts[1];
+    }
+  }
+
+  if (!token) return next();
+
+  const session = await Session.findOne({token}).populate('user');
+
+  if (!session) return ctx.throw(401, 'Неверный аутентификационный токен');
+
+  const resp = await session.update({$set: {'lastVisit': Date.now()}});
+
+  ctx.user = session.user;
   return next();
 });
 
@@ -56,7 +87,7 @@ router.post('/login', login);
 router.get('/oauth/:provider', oauth);
 router.post('/oauth_callback', handleMongooseValidationError, oauthCallback);
 
-router.get('/me', me);
+router.get('/me', mustBeAuthenticated, me);
 
 app.use(router.routes());
 
