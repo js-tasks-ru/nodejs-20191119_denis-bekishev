@@ -8,7 +8,7 @@ const changeId = () => {
     return ret;
   };
 };
-mongoose.set('useCreateIndex', true);
+
 const productSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -40,7 +40,6 @@ const productSchema = new mongoose.Schema({
 
 },
 {
-  autoIndex: false,
   toObject: {
     transform: changeId(),
     versionKey: false,
@@ -66,4 +65,6 @@ productSchema.index(
     }
 );
 
-module.exports = connection.model('Product', productSchema);
+
+const Product = connection.model('Product', productSchema);
+module.exports = Product;
