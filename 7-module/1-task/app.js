@@ -1,5 +1,6 @@
 const Koa = require('koa');
 const Router = require('koa-router');
+const passport = require('./libs/passport');
 const {productsBySubcategory, productList, productById} = require('./controllers/products');
 const {categoryList} = require('./controllers/categories');
 const {login} = require('./controllers/login');
@@ -29,7 +30,7 @@ router.get('/products', productsBySubcategory, productList);
 router.get('/products/:id', productById);
 
 router.post('/login', login);
-
+app.use(passport.initialize());
 app.use(router.routes());
 
 module.exports = app;

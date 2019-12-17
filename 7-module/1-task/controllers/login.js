@@ -4,6 +4,9 @@ const passport = require('../libs/passport');
 module.exports.login = async function login(ctx, next) {
   await passport.authenticate('local', async (err, user, info) => {
     if (err) throw err;
+    // console.log('---err ', err)
+    // console.log('---user ', user)
+    // console.log('---info ', info)
 
     if (!user) {
       ctx.status = 400;
